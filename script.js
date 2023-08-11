@@ -23,7 +23,7 @@ window.addEventListener('load', function(){
             this.height = 190;
             this.x = 20;
             this.y = 100;
-            this.speedY = 0;
+            this.speedY = 0.1;
         }
         update(){
             this.y += this.speedY;
@@ -51,18 +51,18 @@ window.addEventListener('load', function(){
             this.Player = new Player(this); 
         }
         update(){
-            this.player.update();
+            this.Player.update();
         }
-        draw(){
-            this.player.draw();
+        draw(context){
+            this.Player.draw(context);
         }
     }
 
     const game = new Game(canvas.width, canvas.height);
     //animate loop
     function animate(){
-        game.update();
         game.draw(ctx);
+        game.update();
         requestAnimationFrame(animate); 
     }
     animate();
