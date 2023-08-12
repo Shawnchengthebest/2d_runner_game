@@ -90,13 +90,13 @@ window.addEventListener('load', function(){
         draw(context){
             context.fillStyle = 'red'
             context.fillRect(this.x, this.y, this.width, this.height);
-            this.projectiles.forEach(p => p.draw(context))
+            this.projectiles.forEach(p => p.draw(context));
         }
         shootTop(){
             // create porjecticle
             if (this.ammo > 0) {
                 this.projectiles.push(new Projectile(this.game, this.x + this.width, this.y));
-                this.ammo -= 1
+                this.ammo -= 1;
             }
           
             
@@ -132,12 +132,17 @@ window.addEventListener('load', function(){
 
     const game = new Game(canvas.width, canvas.height);    
     //animate loop
-    function animate(){
+    let lastTime = 0;
+    function animate(timeStamp){
+        // delta time 
+        const deltaTime = timeStamp - lastTime;
+        lastTime = timeStamp;
+        console.log(deltaTime);
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         game.draw(ctx);
         game.update();
         requestAnimationFrame(animate); 
     }
-    animate();
+    animate(0);
 });
 
