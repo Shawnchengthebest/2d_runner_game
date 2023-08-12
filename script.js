@@ -66,6 +66,7 @@ window.addEventListener('load', function(){
             this.speedY = 0;
             this.maxSpeed = 2;
             this.projectiles = []; 
+            this.ammo = 20;
         }
         update(){
             // change the speed of player based on the key arrow
@@ -93,7 +94,11 @@ window.addEventListener('load', function(){
         }
         shootTop(){
             // create porjecticle
-            this.projectiles.push(new Projectile(this.game, this.x + this.width, this.y))
+            if (this.ammo > 0) {
+                this.projectiles.push(new Projectile(this.game, this.x + this.width, this.y));
+                this.ammo -= 1
+            }
+          
             
         }
     }
