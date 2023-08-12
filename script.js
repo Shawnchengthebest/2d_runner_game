@@ -41,17 +41,18 @@ window.addEventListener('load', function(){
             this.x = 20;
             this.y = 100;
             this.speedY = 0;
+            this.maxSpeed = 2;
         }
         update(){
             // change the speed of player based on the key arrow
             if (this.game.keys.includes('ArrowUp')) {
                 // do somthing 
-                this.speedY = -1;
+                this.speedY = -this.maxSpeed;
                 console.log(this.speedY)
             } else if (this.game.keys.includes('ArrowDown')) {
-                this.speedY = 1;
+                this.speedY = this.maxSpeed;
                 
-            }
+            } else this.speedY = 0;
             
             this.y += this.speedY;
         }
