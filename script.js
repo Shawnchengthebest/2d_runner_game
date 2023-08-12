@@ -12,9 +12,11 @@ window.addEventListener('load', function(){
             // contruting the key array
             window.addEventListener('keydown', e => {
                 if (((e.key === 'ArrowUp') ||
-                     (e.key === 'ArrowDown')
-                ) && this.game.keys.indexOf(e.key) === -1){
+                     (e.key === 'ArrowDown')) 
+                     && this.game.keys.indexOf(e.key) === -1){
                     this.game.keys.push(e.key);
+                } else if (e.key === ' ') {
+                    this.game.Player.shootTop();
                 }
                 console.log(this.game.keys);
             });
@@ -27,7 +29,28 @@ window.addEventListener('load', function(){
         }
     }
     class Projectile {
-
+        //shooting thing
+        constructor(game, x, y) {
+            this.game = game;
+            this.width = 10;
+            this.height = 3;
+            this.x = x;
+            this.y = y;
+            this.speed = 3;
+            this.markedForDeletion = false;
+        }
+        update(){
+            // make it moving
+            this.x += this.speed;
+            if (this.x > this.game.width * 0.9) {
+                this.markedForDeletion = true;
+            }
+        }
+        draw(context){
+            context.fillStyle = 'green';
+            context.fillRect(this.x, this.y, this.width, this.height);
+        }
+        
     }
     class Particle {
         
@@ -42,6 +65,7 @@ window.addEventListener('load', function(){
             this.y = 100;
             this.speedY = 0;
             this.maxSpeed = 2;
+            this.projectiles = []; 
         }
         update(){
             // change the speed of player based on the key arrow
@@ -55,9 +79,22 @@ window.addEventListener('load', function(){
             } else this.speedY = 0;
             
             this.y += this.speedY;
+
+            // updating projecticles
+            this.projectiles.forEach(p => p.update())
+
+            // remove missle
+            this.projectiles.filter(p => !p.markedForDeletion)
         }
         draw(context){
+            context.fillStyle = 'red'
             context.fillRect(this.x, this.y, this.width, this.height);
+            this.projectiles.forEach(p => p.draw(context))
+        }
+        shootTop(){
+            // create porjecticle
+            this.projectiles.push(new Projectile(this.game, this.x + this.width, this.y))
+            
         }
     }
     class Enemy {
