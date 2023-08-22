@@ -112,6 +112,20 @@ window.addEventListener('load', function(){
 
     }
     class UI {
+        constructor(game){
+            this.game = game
+            this.fontSize = 25;
+            this.fontFamily = 'Serif';
+            this.color = 'white';
+        }
+        draw(context){
+            // ammo ui
+            context.fillStyle = this.color
+            //console.log(this.game.ammo)
+            for (let i = 0; i < this.game.ammo; i++){
+                context.fillRect(20+ 7 * i, 50, 3, 20);
+            }
+        }
 
     }
     class Game {
@@ -121,12 +135,24 @@ window.addEventListener('load', function(){
             this.Player = new Player(this);
             this.keys = [];
             this.input = new InputHandler(this);
+            this.ui = new UI(this);
+            this.ammo = 20;
+            this.ammoMax = 50;
+            this.ammoTimer = 0;
+            this.ammoInterval = 500;
         }
-        update(){
+        update(deltaTime){
             this.Player.update();
+            if (this.ammoTimer > this.ammoInterval){
+                if (this.ammo < this.ammoMax) this.ammo++;
+                this.ammoTimer = 0;
+            } else {
+                this.ammoTimer += deltaTime;
+            }
         }
         draw(context){
             this.Player.draw(context);
+            this.ui.draw(context);
         }
     }
 
@@ -137,7 +163,6 @@ window.addEventListener('load', function(){
         // delta time 
         const deltaTime = timeStamp - lastTime;
         lastTime = timeStamp;
-        console.log(deltaTime);
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         game.draw(ctx);
         game.update(deltaTime);
