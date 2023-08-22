@@ -115,7 +115,7 @@ window.addEventListener('load', function(){
         constructor(game){
             this.game = game
             this.fontSize = 25;
-            this.fontFamily = 'Serif';
+            this.fontFamily = 'helvetica';
             this.color = 'white';
         }
         draw(context){
