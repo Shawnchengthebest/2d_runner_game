@@ -140,8 +140,8 @@ window.addEventListener('load', function(){
         console.log(deltaTime);
         ctx.clearRect(0, 0, canvas.width, canvas.height)
         game.draw(ctx);
-        game.update();
-        requestAnimationFrame(animate); 
+        game.update(deltaTime);
+        requestAnimationFrame(animate);     
     }
     animate(0);
 });
