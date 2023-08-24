@@ -66,7 +66,7 @@ window.addEventListener('load', function(){
             this.speedY = 0;
             this.maxSpeed = 2;
             this.projectiles = []; 
-            this.ammo = 20;
+            // this.ammo = 20;
         }
         update(){
             // change the speed of player based on the key arrow
@@ -94,9 +94,9 @@ window.addEventListener('load', function(){
         }
         shootTop(){
             // create porjecticle
-            if (this.ammo > 0) {
+            if (this.game.ammo > 0) {
                 this.projectiles.push(new Projectile(this.game, this.x + this.width, this.y));
-                this.ammo -= 1;
+                this.game.ammo -= 1;
             }
           
             
@@ -121,7 +121,7 @@ window.addEventListener('load', function(){
         draw(context){
             // ammo ui
             context.fillStyle = this.color
-            //console.log(this.game.ammo)
+            console.log(this.game.ammo)
             for (let i = 0; i < this.game.ammo; i++){
                 context.fillRect(20+ 7 * i, 50, 3, 20);
             }
@@ -133,18 +133,19 @@ window.addEventListener('load', function(){
             this.width = width;
             this.height = height;
             this.Player = new Player(this);
-            this.keys = [];
             this.input = new InputHandler(this);
             this.ui = new UI(this);
             this.ammo = 20;
-            this.ammoMax = 50;
+            this.keys = [];
+            this.maxAmmo = 50;
             this.ammoTimer = 0;
-            this.ammoInterval = 500;
+            this.ammoInterval = 1000;
         }
         update(deltaTime){
             this.Player.update();
             if (this.ammoTimer > this.ammoInterval){
-                if (this.ammo < this.ammoMax) this.ammo++;
+                if (this.ammo < this.maxAmmo) this.ammo++;
+                // reset timer
                 this.ammoTimer = 0;
             } else {
                 this.ammoTimer += deltaTime;
