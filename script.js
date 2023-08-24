@@ -88,7 +88,7 @@ window.addEventListener('load', function(){
             this.projectiles.filter(p => !p.markedForDeletion)
         }
         draw(context){
-            context.fillStyle = 'red'
+            context.fillStyle = 'blue'
             context.fillRect(this.x, this.y, this.width, this.height);
             this.projectiles.forEach(p => p.draw(context));
         }
@@ -126,8 +126,8 @@ window.addEventListener('load', function(){
     class Angeler1 extends Enemy {
         constructor(game){
             super(game);
-            this.width = 228;
-            this.height = 169;
+            this.width = 228 * 0.2;
+            this.height = 169 * 0.2;
             this.y = Math.random() * game.height * 0.9  - this.height;
         }
     }
@@ -196,6 +196,7 @@ window.addEventListener('load', function(){
             } else {
                 this.enemyTimer += deltaTime;
             }
+            // console.log(this.enemies)
         }
         draw(context){
             this.Player.draw(context);
