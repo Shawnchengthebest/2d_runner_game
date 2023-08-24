@@ -103,8 +103,35 @@ window.addEventListener('load', function(){
         }
     }
     class Enemy {
-
+        constructor(game) {
+            this.game = game;
+            this.x = game.width;
+            // this.y = game.height;
+            this.speedX = Math.random() * -1.5 -0.5;
+            this.markedForDeletion = false;
+        }
+        update(){
+            this.x += this.speedX;
+            // mark ememy if it moves out the screen
+            if (this.x + this.width < 0){
+                this.markedForDeletion = true;
+            }
+        }
+        draw(context){
+            context.fillStyle = 'red';
+            context.fillRect(this.x, this.y, this.width, this.height); //with,;heigth;provided by child class
+        }
     }
+
+    class Angeler1 extends Enemy {
+        constructor(game){
+            super(game);
+            this.width = 228;
+            this.height = 169;
+            this.y = Math.random() * game.height * 0.9  - this.height;
+        }
+    }
+
     class layer {
 
     }
@@ -137,9 +164,13 @@ window.addEventListener('load', function(){
             this.ui = new UI(this);
             this.ammo = 20;
             this.keys = [];
+            this.enemies = [];
             this.maxAmmo = 50;
             this.ammoTimer = 0;
             this.ammoInterval = 1000;
+            this.enemyTimer = 0;
+            this.enemyInterval = 1000;
+            this.gameOver = false;
         }
         update(deltaTime){
             this.Player.update();
@@ -150,10 +181,34 @@ window.addEventListener('load', function(){
             } else {
                 this.ammoTimer += deltaTime;
             }
+            // update enemies
+            this.enemies.forEach(enemy => {
+                enemy.update();
+            });
+    
+            this.enemies = this.enemies.filter(enemy => (
+                !enemy.markedForDeletion
+            ));
+
+            if (this.enemyTimer > this.enemyInterval && !this.gameOver){
+                this.addEnemy();
+                this.enemyTimer = 0;
+            } else {
+                this.enemyTimer += deltaTime;
+            }
         }
         draw(context){
             this.Player.draw(context);
             this.ui.draw(context);
+            // draw all tpyes of enemmy
+            this.enemies.forEach(
+                enemy => {
+                    enemy.draw(context);
+                }
+            )
+        }
+        addEnemy(){
+            this.enemies.push(new Angeler1(this));
         }
     }
 
