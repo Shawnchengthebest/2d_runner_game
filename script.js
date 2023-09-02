@@ -16,7 +16,7 @@ window.addEventListener('load', function(){
                      && this.game.keys.indexOf(e.key) === -1){
                     this.game.keys.push(e.key);
                 } else if (e.key === ' ') {
-                    this.game.Player.shootTop();
+                    this.game.player.shootTop();
                 }
                 console.log(this.game.keys);
             });
@@ -159,7 +159,7 @@ window.addEventListener('load', function(){
         constructor(width, height){
             this.width = width;
             this.height = height;
-            this.Player = new Player(this);
+            this.player = new Player(this);
             this.input = new InputHandler(this);
             this.ui = new UI(this);
             this.ammo = 20;
@@ -173,7 +173,7 @@ window.addEventListener('load', function(){
             this.gameOver = false;
         }
         update(deltaTime){
-            this.Player.update();
+            this.player.update();
             if (this.ammoTimer > this.ammoInterval){
                 if (this.ammo < this.maxAmmo) this.ammo++;
                 // reset timer
@@ -184,6 +184,9 @@ window.addEventListener('load', function(){
             // update enemies
             this.enemies.forEach(enemy => {
                 enemy.update();
+                if (this.checkCollision(this.player, enemy)){
+                    enemy.markedForDeletion = true;
+                 }
             });
     
             this.enemies = this.enemies.filter(enemy => (
@@ -199,7 +202,7 @@ window.addEventListener('load', function(){
             // console.log(this.enemies)
         }
         draw(context){
-            this.Player.draw(context);
+            this.player.draw(context);
             this.ui.draw(context);
             // draw all tpyes of enemmy
             this.enemies.forEach(
@@ -210,6 +213,13 @@ window.addEventListener('load', function(){
         }
         addEnemy(){
             this.enemies.push(new Angeler1(this));
+        }
+        checkCollision(rect1, rect2){
+        return (    rect1.x < rect2.x + rect2.width &&
+                        rect1.x + rect1.width > rect2.x &&
+                        rect1.y < rect2.y + rect2.height &&
+                        rect1.height + rect1.y > rect2.y)
+            
         }
     }
 
