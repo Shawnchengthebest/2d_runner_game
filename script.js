@@ -18,12 +18,10 @@ window.addEventListener('load', function(){
                 } else if (e.key === ' ') {
                     this.game.player.shootTop();
                 }
-                console.log(this.game.keys);
             });
             window.addEventListener('keyup', e =>{
                 if (this.game.keys.indexOf(e.key) > -1){
                     this.game.keys.splice(this.game.keys.indexOf(e.key), 1);
-                    console.log(this.game.keys)
                 }
             });
         }
@@ -57,7 +55,6 @@ window.addEventListener('load', function(){
     }
     class Player {
         constructor(game) {
-            console.log(game);  
             this.game = game;
             this.width = 120;
             this.height = 190;
@@ -73,7 +70,6 @@ window.addEventListener('load', function(){
             if (this.game.keys.includes('ArrowUp')) {
                 // do somthing 
                 this.speedY = -this.maxSpeed;
-                console.log(this.speedY)
             } else if (this.game.keys.includes('ArrowDown')) {
                 this.speedY = this.maxSpeed;
                 
@@ -82,10 +78,10 @@ window.addEventListener('load', function(){
             this.y += this.speedY;
 
             // updating projecticles
-            this.projectiles.forEach(p => p.update())
+            this.projectiles.forEach(p => p.update());
 
             // remove missle
-            this.projectiles.filter(p => !p.markedForDeletion)
+            this.projectiles = this.projectiles.filter(p => (!p.markedForDeletion));
         }
         draw(context){
             context.fillStyle = 'blue'
@@ -152,8 +148,7 @@ window.addEventListener('load', function(){
         }
         draw(context){
             // ammo ui
-            context.fillStyle = this.color
-            console.log(this.game.ammo)
+            context.fillStyle = this.color;
             for (let i = 0; i < this.game.ammo; i++){
                 context.fillRect(20+ 7 * i, 50, 3, 20);
             }
@@ -178,30 +173,39 @@ window.addEventListener('load', function(){
             this.gameOver = false;
         }
         update(deltaTime){
+            //update player (including projectiles)
             this.player.update();
+            console.log(this.player.projectiles.length);
+            //update ammo 
             if (this.ammoTimer > this.ammoInterval){
                 if (this.ammo < this.maxAmmo) this.ammo++;
                 // reset timer
                 this.ammoTimer = 0;
             } else {
-                this.ammoTimer += deltaTime;
+                this .ammoTimer += deltaTime;
             }
+
             // update enemies
             this.enemies.forEach(enemy => {
                 enemy.update();
+                // check collison between player and enemy
                 if (this.checkCollision(this.player, enemy)){
                     enemy.markedForDeletion = true;
-                 }
-                this.player.projectiles.forEach(Projectile => {
-                    if (this.checkCollision(Projectile, enemy)){
+                };
+
+                // check collision for all projectiles and enemy 
+                this.player.projectiles.forEach(projectile => {
+                    if (this.checkCollision(projectile, enemy)){
                         enemy.lives--;
-                        Projectile.markedForDeletion = true;
-                        if (enemy.lives <= 0){
-                            enemy.markedForDeletion = true;
-                            this.score+= enemy.score;
-                        }
+                        projectile.markedForDeletion = true;
                     }
                 });
+                // console.log(this.player.projectiles)
+                // mark enemy for deletion 
+                if (enemy.lives <= 0){
+                    enemy.markedForDeletion = true;
+                    this.score+= enemy.score;
+                }
             });
     
             this.enemies = this.enemies.filter(enemy => (
@@ -214,7 +218,6 @@ window.addEventListener('load', function(){
             } else {
                 this.enemyTimer += deltaTime;
             }
-            // console.log(this.enemies)
         }
         draw(context){
             this.player.draw(context);
