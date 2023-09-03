@@ -109,6 +109,8 @@ window.addEventListener('load', function(){
             // this.y = game.height;
             this.speedX = Math.random() * -1.5 -0.5;
             this.markedForDeletion = false;
+            this.lives = 5;
+            this.score = this.lives;
         }
         update(){
             this.x += this.speedX;
@@ -120,6 +122,9 @@ window.addEventListener('load', function(){
         draw(context){
             context.fillStyle = 'red';
             context.fillRect(this.x, this.y, this.width, this.height); //with,;heigth;provided by child class
+            context.fillStyle = 'black'
+            context.font = '20px Helvetca';
+            context.fillText(this.lives, this.x, this.y)
         }
     }
 
@@ -187,6 +192,16 @@ window.addEventListener('load', function(){
                 if (this.checkCollision(this.player, enemy)){
                     enemy.markedForDeletion = true;
                  }
+                this.player.projectiles.forEach(Projectile => {
+                    if (this.checkCollision(Projectile, enemy)){
+                        enemy.lives--;
+                        Projectile.markedForDeletion = true;
+                        if (enemy.lives <= 0){
+                            enemy.markedForDeletion = true;
+                            this.score+= enemy.score;
+                        }
+                    }
+                });
             });
     
             this.enemies = this.enemies.filter(enemy => (
