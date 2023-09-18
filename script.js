@@ -149,6 +149,7 @@ window.addEventListener('load', function(){
         }
         draw(context){
             context.drawImage(this.image, this.x, this.y);
+            context.drawImage(this.image, this.x + this.width, this.y);
         }
     }
     class Background {
