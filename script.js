@@ -230,8 +230,8 @@ window.addEventListener('load', function(){
                     message1 = 'You Win!';
                     message2 = 'Well Done!';
                 } else {
-                    message1 = 'You Lost'
-                    message2 = 'Try Again Next time'
+                    message1 = 'You Lost';
+                    message2 = 'Try Again Next time';
                 }
                 context.font = '50px ' + this.fontFamily;
                 context.fillText(message1, this.game.width * 0.5, this.game.height * 0.5 - 40);
