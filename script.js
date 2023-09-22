@@ -120,6 +120,9 @@ window.addEventListener('load', function(){
             this.markedForDeletion = false;
             this.lives = 5;
             this.score = this.lives;
+            this.frameX = 0;
+            this.frameY = 0;
+            this.maxFrameX = 37;
         }
         update(){
             this.x += this.speedX;
@@ -127,22 +130,30 @@ window.addEventListener('load', function(){
             if (this.x + this.width < 0){
                 this.markedForDeletion = true;
             }
+
+            //Sprite anamation
+            if (this.frameX < this.maxFrameX) {
+                this.frameX++;
+            } else {
+                this.frameX  = 0;
+            }
         }
         draw(context){
-            context.fillStyle = 'red';
-            context.fillRect(this.x, this.y, this.width, this.height); //with,;heigth;provided by child class
-            context.fillStyle = 'black'
+            if(this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height); //with,;heigth;provided by child class
+            context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);//this.image will be provided by child class
             context.font = '20px Helvetca';
-            context.fillText(this.lives, this.x, this.y)
+            context.fillText(this.lives, this.x, this.y);
         }
     }
 
     class Angeler1 extends Enemy {
         constructor(game){
             super(game);
-            this.width = 228 * 0.2;
-            this.height = 169 * 0.2;
-            this.y = Math.random() * game.height * 0.9  - this.height;
+            this.width = 228;
+            this.height = 169;
+            this.frameY = Math.floor(Math.random() * 3);
+            this.y = Math.random() * game.height * 0.9 - this.height;
+            this.image = document.getElementById('angler1');
         }
     }
 
