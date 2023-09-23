@@ -118,14 +118,12 @@ window.addEventListener('load', function(){
             // this.y = game.height;
             this.speedX = Math.random() * -1.5 -0.5;
             this.markedForDeletion = false;
-            this.lives = 5;
-            this.score = this.lives;
             this.frameX = 0;
             this.frameY = 0;
             this.maxFrameX = 37;
         }
         update(){
-            this.x += this.speedX;
+            this.x += this.speedX - this.game.speed;
             // mark ememy if it moves out the screen
             if (this.x + this.width < 0){
                 this.markedForDeletion = true;
@@ -154,6 +152,20 @@ window.addEventListener('load', function(){
             this.frameY = Math.floor(Math.random() * 3);
             this.y = Math.random() * game.height * 0.9 - this.height;
             this.image = document.getElementById('angler1');
+            this.lives = 2;
+            this.score = this.lives;
+        }
+    }
+    class Angeler2 extends Enemy {
+        constructor(game){
+            super(game);
+            this.width = 213;
+            this.height = 163;
+            this.y = Math.random() * game.height * 0.9 - this.height;
+            this.image = document.getElementById('angler2');
+            this.frameY = Math.floor(Math.random() * 2);
+            this.lives = 3;
+            this.score = this.lives;
         }
     }
 
@@ -262,7 +274,7 @@ window.addEventListener('load', function(){
             this.score = 0;
             this.winningScore = 10;
             this.gameTime = 0;
-            this.timerlimit = 5000;
+            this.timerlimit = 15000;
             this.speed = 1;
             this.debug = true;
         }
@@ -330,7 +342,10 @@ window.addEventListener('load', function(){
             )
         }
         addEnemy(){
-            this.enemies.push(new Angeler1(this));
+            const randomize = Math.random();
+            if (randomize < 0.5) this.enemies.push(new Angeler1(this));
+            else this.enemies.push(new Angeler2(this));
+            
         }
         checkCollision(rect1, rect2){
         return (    rect1.x < rect2.x + rect2.width &&
