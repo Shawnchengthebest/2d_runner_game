@@ -69,6 +69,7 @@ window.addEventListener('load', function(){
             this.maxSpeed = 2;
             this.projectiles = []; 
             this.image = document.getElementById('player');
+            
             // this.ammo = 20;
         }
         update(){
@@ -166,6 +167,20 @@ window.addEventListener('load', function(){
             this.frameY = Math.floor(Math.random() * 2);
             this.lives = 3;
             this.score = this.lives;
+        }
+    }
+
+    class LuckyFish extends Enemy {
+        constructor(game){
+            super(game);
+            this.width = 99;
+            this.height = 95;
+            this.y = Math.random() * game.height * 0.9 - this.height;
+            this.image = document.getElementById('lucky');
+            this.frameY = Math.floor(Math.random() * 2);
+            this.lives = 3;
+            this.score = 15;
+            this.type = 'lucky';
         }
     }
 
@@ -343,8 +358,9 @@ window.addEventListener('load', function(){
         }
         addEnemy(){
             const randomize = Math.random();
-            if (randomize < 0.5) this.enemies.push(new Angeler1(this));
-            else this.enemies.push(new Angeler2(this));
+            if (randomize < 0.3) this.enemies.push(new Angeler1(this));
+            else if (randomize < 0.6) this.enemies.push(new Angeler2(this));
+            else this.enemies.push(new LuckyFish(this));
             
         }
         checkCollision(rect1, rect2){
