@@ -69,10 +69,15 @@ window.addEventListener('load', function(){
             this.maxSpeed = 2;
             this.projectiles = []; 
             this.image = document.getElementById('player');
-            
+            this.powerUp = false;
+            this.powerUpTimer = 0;
+            this.powerUpInterval  = 10000;
+
+        
+
             // this.ammo = 20;
         }
-        update(){
+        update(deltaTime){
             // change the speed of player based on the key arrow
             if (this.game.keys.includes('ArrowUp')) {
                 // do somthing 
@@ -96,20 +101,43 @@ window.addEventListener('load', function(){
             } else {
                 this.frameX  = 0;
             }
+            //Power up for lucky for the player when touched
+            if (this.powerUp){
+                if (this.powerUpTimer > this.powerUpInterval){
+                    this.powerUpTimer = 0;
+                    this.powerUp = false;
+                    this.frameY = 0;
+                } else {
+                    this.powerUpTimer += deltaTime;
+                    this.frameY = 1;
+                    this.game.ammo += 0.1;
+
+                }
+            }
         }
         draw(context){
-            if (this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
-            context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
             this.projectiles.forEach(p => p.draw(context));
+            if (this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);  
+            context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);     
         }
         shootTop(){
             // create porjecticle
             if (this.game.ammo > 0) {
-                this.projectiles.push(new Projectile(this.game, this.x + this.width, this.y));
-                this.game.ammo -= 1;
+                this.projectiles.push(new Projectile(this.game, this.x + 80, this.y + 30));
+                this.game.ammo --;
             }
-          
-            
+            if (this.powerUp) this.shootBottom();    
+        }
+        shootBottom(){
+            if (this.game.ammo > 0) {
+                this.projectiles.push(new Projectile(this.game, this.x + 80, this.y + 175));
+            }
+        }
+
+        enterPowerUp(){
+            this.powerUpTimer = 0;
+            this.powerUp = true;
+            this.game.ammo = this.game.maxAmmo;
         }
     }
     class Enemy {
@@ -240,8 +268,9 @@ window.addEventListener('load', function(){
             context.font = this.fontSize + 'px' + this.fontFamily;
             //score
             context.fillText('Score: ' + this.game.score, 20, 40);
-            // ammo ui
-            
+            // ammo ui 
+            if (this.game.player.powerUp) {
+                context.fillStyle = '#ffffbd';}
             for (let i = 0; i < this.game.ammo; i++){
                 context.fillRect(20+ 7 * i, 50, 3, 20);
             }
@@ -287,9 +316,9 @@ window.addEventListener('load', function(){
             this.enemyInterval = 1000;
             this.gameOver = false;
             this.score = 0;
-            this.winningScore = 10;
+            this.winningScore = 200;
             this.gameTime = 0;
-            this.timerlimit = 15000;
+            this.timerlimit = 500000;
             this.speed = 1;
             this.debug = true;
         }
@@ -299,7 +328,7 @@ window.addEventListener('load', function(){
             if (this.gameTime > this.timerlimit) this.gameOver = true;
             this.background.update();
             //update player (including projectiles)
-            this.player.update();
+            this.player.update(deltaTime);
             // console.log(this.player.projectiles.length);
             //update ammo 
             if (this.ammoTimer > this.ammoInterval){
@@ -316,6 +345,12 @@ window.addEventListener('load', function(){
                 // check collison between player and enemy
                 if (this.checkCollision(this.player, enemy)){
                     enemy.markedForDeletion = true;
+                    if (enemy.type == 'lucky') {
+                        this.player.enterPowerUp();
+                    } else {
+                        this.score--;
+                    }
+
                 };
 
                 // check collision for all projectiles and enemy 
@@ -364,7 +399,7 @@ window.addEventListener('load', function(){
             
         }
         checkCollision(rect1, rect2){
-        return (    rect1.x < rect2.x + rect2.width &&
+        return (        rect1.x < rect2.x + rect2.width &&
                         rect1.x + rect1.width > rect2.x &&
                         rect1.y < rect2.y + rect2.height &&
                         rect1.height + rect1.y > rect2.y)
